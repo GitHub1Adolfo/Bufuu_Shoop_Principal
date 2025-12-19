@@ -1,0 +1,300 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_orden.css' %}">
+    <title>Editar Orden #{{ orden.orden_id }}</title>
+</head>
+
+<body>
+    {% include 'modern_navbar.html' %}
+    
+    <div class="admin-page">
+        <div class="admin-container">
+            <!-- Header -->
+            <div class="admin-header">
+                <div class="header-left">
+                    <h1>📝 Editar Orden</h1>
+                    <p class="orden-id">#{{ orden.orden_id }}</p>
+                </div>
+                <div class="header-right">
+                    <span class="badge badge-{{ orden.estado }}">{{ orden.get_estado_display }}</span>
+                </div>
+            </div>
+
+            <!-- Cliente Info -->
+            <div class="info-card">
+                <h3>👤 Información del Cliente</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Nombre:</span>
+                        <span class="info-value">{{ orden.user.get_full_name|default:orden.user.username }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value">{{ orden.user.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Dirección:</span>
+                        <span class="info-value">{{ orden.direccion_envio }}, {{ orden.ciudad }}, {{ orden.region }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Fecha:</span>
+                        <span class="info-value">{{ orden.fecha|date:"d/m/Y H:i" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Items de la Orden (Editables) -->
+            <div class="items-card">
+                <div class="card-header">
+                    <h3>📦 Productos</h3>
+                    <button type="button" class="btn-add" onclick="mostrarModalAgregar()">
+                        ➕ Agregar Producto
+                    </button>
+                </div>
+
+                <div class="items-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unit.</th>
+                                <th>Subtotal</th>
+                                <th>Notas</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="items-tbody">
+                            {% for item in items %}
+                            <tr data-item-id="{{ item.id }}">
+                                <td>
+                                    <div class="producto-cell">
+                                        {% if item.producto.imagen %}
+                                        <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="producto-img">
+                                        {% endif %}
+                                        <span>{{ item.producto.nombre }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="number" 
+                                           class="input-cantidad" 
+                                           value="{{ item.cantidad }}" 
+                                           min="1"
+                                           data-item-id="{{ item.id }}">
+                                </td>
+                                <td>
+                                    <input type="number" 
+                                           class="input-precio" 
+                                           value="{{ item.precio_unitario }}" 
+                                           min="0"
+                                           data-item-id="{{ item.id }}">
+                                </td>
+                                <td class="subtotal-cell" id="subtotal-{{ item.id }}">
+                                    ${{ item.subtotal|floatformat:0|intcomma }}
+                                </td>
+                                <td>
+                                    <input type="text" 
+                                           class="input-notas" 
+                                           placeholder="Notas..."
+                                           value="{{ item.notas_admin|default:'' }}"
+                                           data-item-id="{{ item.id }}">
+                                </td>
+                                <td>
+                                    <form method="POST" action="{% url 'eliminar_item_orden' item.id %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-eliminar" onclick="return confirm('¿Eliminar este producto?')">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Total -->
+            <div class="total-card">
+                <div class="total-row">
+                    <span class="total-label">Total:</span>
+                    <span class="total-value" id="total-orden">${{ total|floatformat:0|intcomma }}</span>
+                </div>
+            </div>
+
+            <!-- Botón Aprobar -->
+            <div class="actions-card">
+                <button type="button" class="btn-aprobar" onclick="confirmarAprobacion()">
+                    ✅ Generar Boleta y Aprobar Orden
+                </button>
+                <a href="{% url 'lista_ordenes_admin' %}" class="btn-cancelar">
+                    ❌ Cancelar
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Aprobación -->
+    <div id="modalConfirmar" class="modal">
+        <div class="modal-content">
+            <h2>⚠️ Confirmar Aprobación</h2>
+            <p>¿Estás seguro que deseas aprobar esta orden y generar la boleta?</p>
+            <p class="modal-warning">Esta acción no se puede deshacer.</p>
+            
+            <div class="modal-actions">
+                <form method="POST" action="{% url 'aprobar_orden' orden.orden_id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-confirmar">✅ Sí, Aprobar</button>
+                </form>
+                <button type="button" class="btn-cancelar-modal" onclick="cerrarModal()">❌ Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Agregar Producto -->
+    <div id="modalAgregar" class="modal">
+        <div class="modal-content">
+            <h2>➕ Agregar Producto</h2>
+            
+            <form method="POST" action="{% url 'agregar_item_orden' orden.orden_id %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label>Producto:</label>
+                    <select name="producto_id" required class="form-select">
+                        {% for producto in productos_disponibles %}
+                        <option value="{{ producto.id }}">
+                            {{ producto.nombre }} - ${{ producto.precio|floatformat:0|intcomma }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Cantidad:</label>
+                    <input type="number" name="cantidad" value="1" min="1" required class="form-input">
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="submit" class="btn-confirmar">➕ Agregar</button>
+                    <button type="button" class="btn-cancelar-modal" onclick="cerrarModalAgregar()">❌ Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Función para obtener CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        // Actualizar item vía AJAX
+        function actualizarItem(itemId) {
+            const row = document.querySelector(`tr[data-item-id="${itemId}"]`);
+            const cantidad = row.querySelector('.input-cantidad').value;
+            const precio = row.querySelector('.input-precio').value;
+            const notas = row.querySelector('.input-notas').value;
+            
+            fetch(`/gestion/orden/item/${itemId}/actualizar/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    cantidad: cantidad,
+                    precio: precio,
+                    notas: notas
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Actualizar subtotal del item
+                    document.getElementById(`subtotal-${itemId}`).textContent = 
+                        `$${data.subtotal.toLocaleString('es-CL')}`;
+                    
+                    // Actualizar total de la orden
+                    document.getElementById('total-orden').textContent = 
+                        `$${data.total_orden.toLocaleString('es-CL')}`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al actualizar el item');
+            });
+        }
+
+        // Event listeners para los inputs (en lugar de onchange inline)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Agregar listeners a todos los inputs
+            document.querySelectorAll('.input-cantidad, .input-precio, .input-notas').forEach(input => {
+                input.addEventListener('change', function() {
+                    const itemId = this.getAttribute('data-item-id');
+                    actualizarItem(itemId);
+                });
+            });
+        });
+
+        // Modal confirmación
+        function confirmarAprobacion() {
+            document.getElementById('modalConfirmar').style.display = 'flex';
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalConfirmar').style.display = 'none';
+        }
+
+        // Modal agregar producto
+        function mostrarModalAgregar() {
+            document.getElementById('modalAgregar').style.display = 'flex';
+        }
+
+        function cerrarModalAgregar() {
+            document.getElementById('modalAgregar').style.display = 'none';
+        }
+
+        // Cerrar modales con tecla ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                cerrarModal();
+                cerrarModalAgregar();
+            }
+        });
+
+        // Cerrar modales al hacer click fuera
+        window.addEventListener('click', function(event) {
+            const modalConfirmar = document.getElementById('modalConfirmar');
+            const modalAgregar = document.getElementById('modalAgregar');
+            
+            if (event.target === modalConfirmar) {
+                cerrarModal();
+            }
+            if (event.target === modalAgregar) {
+                cerrarModalAgregar();
+            }
+        });
+    </script>
+</body>
+</html>

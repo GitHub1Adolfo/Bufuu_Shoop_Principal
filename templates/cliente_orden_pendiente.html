@@ -1,0 +1,170 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_receipt.css' %}">
+    <title>Orden en Revisión</title>
+</head>
+
+<body>
+    <div class="receipt-page" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);">
+        <div class="receipt-container">
+            <!-- Header -->
+            <div class="receipt-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <div class="receipt-icon" style="font-size: 5rem; animation: pulse 2s ease-in-out infinite;">⏳</div>
+                <h1 class="receipt-store-name">Orden en Revisión</h1>
+                <p class="receipt-title">Tu compra está siendo verificada</p>
+            </div>
+
+            <!-- Body -->
+            <div class="receipt-body">
+                <!-- Orden ID -->
+                <div class="order-number">
+                    <div class="order-label">Número de Orden</div>
+                    <div class="order-id">#{{ orden.orden_id }}</div>
+                </div>
+
+                <!-- Timeline -->
+                <div style="background: white; padding: 2rem; border-radius: 1rem; margin: 2rem 0;">
+                    <h3 style="text-align: center; margin-bottom: 1.5rem;">📋 Estado de tu Pedido</h3>
+                    
+                    <div class="timeline">
+                        <div class="timeline-item active">
+                            <div class="timeline-icon">✅</div>
+                            <div class="timeline-content">
+                                <strong>Pedido Recibido</strong>
+                                <p>{{ orden.fecha|date:"d/m/Y H:i" }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item active">
+                            <div class="timeline-icon">⏳</div>
+                            <div class="timeline-content">
+                                <strong>En Revisión</strong>
+                                <p>Nuestro equipo está verificando tu pedido</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">📄</div>
+                            <div class="timeline-content">
+                                <strong>Boleta Generada</strong>
+                                <p>Podrás ver tu boleta aquí</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-icon">🚚</div>
+                            <div class="timeline-content">
+                                <strong>En Camino</strong>
+                                <p>Tu pedido será enviado</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div style="padding: 1.5rem; background: #fffbeb; border-radius: 0.75rem; border-left: 4px solid #f59e0b;">
+                    <strong style="color: #92400e;">📌 ¿Qué sigue?</strong>
+                    <ul style="margin: 1rem 0 0; padding-left: 1.5rem; color: #92400e;">
+                        <li>Nuestro equipo revisará tu pedido</li>
+                        <li>Confirmaremos los productos y cantidades</li>
+                        <li>Generaremos tu boleta final</li>
+                        <li>Te notificaremos cuando esté lista</li>
+                    </ul>
+                </div>
+
+                <!-- Refrescar -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button onclick="location.reload()" class="btn-primary-receipt">
+                        🔄 Refrescar Estado
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="receipt-footer">
+                <h3 class="receipt-message">Gracias por tu paciencia</h3>
+                <p class="receipt-submessage">Te notificaremos cuando tu pedido esté listo</p>
+                
+                <div class="receipt-actions">
+                    <a href="{% url 'menu' %}" class="btn-secondary-receipt">
+                        🛍️ Seguir Comprando
+                    </a>
+                    <a href="{% url 'inicio' %}" class="btn-secondary-receipt">
+                        🏠 Ir al Inicio
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 1rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e5e7eb;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            opacity: 0.4;
+        }
+
+        .timeline-item.active {
+            opacity: 1;
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: -2.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .timeline-item.active .timeline-icon {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-color: #f59e0b;
+        }
+
+        .timeline-content strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .timeline-content p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,230 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_receipt.css' %}">
+    <title>Boleta de Compra - BuFuu GrowShop</title>
+</head>
+
+<body>
+    <div class="receipt-page">
+        <div class="receipt-container">
+            <!-- Receipt Header -->
+            <div class="receipt-header">
+                <div class="receipt-icon">🌿</div>
+                <h1 class="receipt-store-name">BuFuu GrowShop</h1>
+                <p class="receipt-title">Boleta de Compra</p>
+                <div class="receipt-date">
+                    <span>📅</span>
+                    <span>{{ today|default:"now"|date:"d/m/Y H:i" }}</span>
+                </div>
+            </div>
+
+            {% if pago %}
+            <div style="padding: 1rem; text-align: center; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-bottom: 2px solid #10b981;">
+                <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: white; border-radius: 9999px; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);">
+                    <span style="font-size: 1.25rem;">✓</span>
+                    <span style="font-weight: 700; color: #065f46;">Pago {{ pago.get_estado_display }}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Receipt Body -->
+            <div class="receipt-body">
+                <!-- Success Badge -->
+                <div style="text-align: center;">
+                    <div class="success-badge">
+                        ¡Compra Exitosa!
+                    </div>
+                </div>
+
+                <!-- Order Number -->
+                <div class="order-number">
+                    <div class="order-label">Número de Orden</div>
+                    <div class="order-id">#{{ order_id|default:"00001" }}</div>
+                </div>
+
+                <!-- Items Section -->
+                <div class="receipt-items">
+                    <h3 class="section-title">Productos Comprados</h3>
+                    
+                    {% for item in items %}
+                    <div class="receipt-item">
+                        <div class="item-quantity">{{ item.cantidad }}</div>
+                        
+                        <div class="item-details">
+                            <div class="item-name">{{ item.producto.nombre }}</div>
+                            <div class="item-unit-price">
+                                ${{ item.producto.precio|floatformat:0|intcomma }} c/u
+                            </div>
+                        </div>
+                        
+                        <div class="item-total">
+                            ${{ item.total_producto|floatformat:0|intcomma }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Summary Section -->
+                <div class="receipt-summary">
+                    <div class="summary-row">
+                        <span class="summary-label">Subtotal:</span>
+                        <span class="summary-value">${{ total|floatformat:0|intcomma }}</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Envío:</span>
+                        <span class="summary-value" style="color: #10b981;">Gratis</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Descuento:</span>
+                        <span class="summary-value">-$0</span>
+                    </div>
+                    
+                    <div class="summary-row total">
+                        <span class="summary-label">Total:</span>
+                        <span class="summary-value">${{ total|floatformat:0|intcomma }}</span>
+                    </div>
+                </div>
+                
+                <!-- Payment Method -->
+
+                <div class="payment-method">
+                    <div class="payment-icon">
+                        {% if pago.metodo_pago == 'mercadopago' %}💳
+                        {% elif pago.metodo_pago == 'transferencia' %}🏦
+                        {% else %}💵{% endif %}
+                    </div>
+                    <div class="payment-details">
+                        <div class="payment-label">Método de Pago</div>
+                        <div class="payment-value">{{ pago.get_metodo_pago_display }}</div>
+                    </div>
+                </div>
+                <!-- Optional: QR Code Section
+                <div class="qr-section">
+                    <div class="qr-label">Escanea para ver tu compra online</div>
+                    <div class="qr-code">
+                        <img src="{% static 'img/qr-code.png' %}" alt="QR Code" style="width: 100%; height: 100%;">
+                    </div>
+                </div>
+                -->
+
+            </div>
+
+            <!-- Receipt Footer -->
+            <div class="receipt-footer">
+                <h3 class="receipt-message">¡Gracias por tu compra!</h3>
+                <p class="receipt-submessage">
+                    Esperamos que disfrutes tus productos 🌱
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="receipt-actions">
+                    <a href="{% url 'menu' %}" class="btn-primary-receipt">
+                        🛍️ Seguir Comprando
+                    </a>
+                    
+                    <a href="{% url 'inicio' %}" class="btn-secondary-receipt">
+                        🏠 Volver al Inicio
+                    </a>
+                    
+                    <button onclick="window.print()" class="btn-print">
+                        🖨️ Imprimir Boleta
+                    </button>
+                </div>
+            </div>
+
+            <!-- Store Info -->
+            <div class="store-info">
+                <div class="store-info-line">
+                    <strong>BuFuu GrowShop</strong>
+                </div>
+                <div class="store-info-line">
+                    📍 Dirección de la tienda
+                </div>
+                <div class="store-info-line">
+                    📞 +56 9 XXXX XXXX
+                </div>
+                <div class="store-info-line">
+                    📧 contacto@bufuu.cl
+                </div>
+                <div class="store-info-line" style="margin-top: 1rem; font-size: 0.75rem;">
+                    Esta boleta es un comprobante de compra válido
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auto-print script (optional) -->
+    <script>
+        // Uncomment to auto-print on page load
+        // window.addEventListener('load', function() {
+        //     setTimeout(function() {
+        //         window.print();
+        //     }, 1000);
+        // });
+
+        // Add animation to items
+        document.addEventListener('DOMContentLoaded', function() {
+            const items = document.querySelectorAll('.receipt-item');
+            items.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+            });
+
+            // Confetti effect (optional)
+            // You can add a confetti library here for celebration effect
+        });
+
+        // Prevent accidental navigation away
+        let hasConfirmed = false;
+        
+        window.addEventListener('beforeunload', function(e) {
+            if (!hasConfirmed) {
+                e.preventDefault();
+                e.returnValue = '¿Estás seguro? No has guardado tu boleta.';
+            }
+        });
+
+        // Mark as confirmed when printing or navigating intentionally
+        document.querySelectorAll('a, .btn-print').forEach(element => {
+            element.addEventListener('click', function() {
+                hasConfirmed = true;
+            });
+        });
+    </script>
+
+    <!-- Messages Display -->
+    {% if messages %}
+        <div style="position: fixed; top: 2rem; right: 2rem; z-index: 9999; max-width: 400px;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" style="animation: slideIn 0.5s ease; margin-bottom: 0.5rem;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <style>
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+
+</body>
+
+</html>

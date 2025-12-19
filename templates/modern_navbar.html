@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_navbar.css' %}">
+</head>
+
+<body>
+    <!-- Modern Header with Glass Effect -->
+    <header class="header">
+        <div class="header-content">
+            {% comment %} You can add a logo here if you want {% endcomment %}
+            <!-- <h1 class="header-title">🌿 BuFuu GrowShop</h1> -->
+        </div>
+    </header>
+
+    <!-- Modern Navbar with Glass Morphism -->
+    <nav id="navbar">
+        <ul>
+            <li><a href="{% url 'inicio' %}" class="nav-link">🏠 Inicio</a></li>
+            <li><a href="{% url 'menu' %}" class="nav-link">🛍️ Menú</a></li>
+            <li><a href="{% url 'quienes_somos' %}" class="nav-link">👥 Quiénes Somos</a></li>
+            <li><a href="#contacto" class="nav-link">📞 Contacto</a></li>
+            <li><a href="{% url 'mis_ordenes' %}" class="nav-link">📦 Mis Órdenes</a></li>
+            
+            {% if user.is_authenticated %}
+                {% if user.is_staff or user.is_superuser %}
+                    <li><a href="{% url 'agregar_producto' %}" class="nav-link">➕ Agregar Producto</a></li>
+                    <li><a href="/api/" class="nav-link">🔌 API</a></li>
+                    <li><a href="{% url 'categorias' %}" class="nav-link">🏷️ Categorías</a></li>
+                    <li><a href="{% url 'lista_ordenes_admin' %}" class="nav-link nav-admin">🔧 Gestión Órdenes</a></li>
+                    {% endif %}
+                
+                <li>
+                    <a href="{% url 'carrito_compras' %}" class="boton-carrito">
+                        Ver Carrito
+                        {% comment %} Optional: Add cart count badge {% endcomment %}
+                        {% if cart_count %}
+                            <span class="cart-badge">{{ cart_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                
+                <li>
+                    <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link" style="background: none; border: none; cursor: pointer;">
+                            🚪 Cerrar Sesión
+                        </button>
+                    </form>
+                </li>
+            {% else %}
+                <li><a href="{% url 'login' %}" class="nav-link">🔐 Iniciar Sesión</a></li>
+                <li><a href="{% url 'register' %}" class="nav-link">✨ Registrarse</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <!-- Sticky Navbar on Scroll Script -->
+    <script>
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>

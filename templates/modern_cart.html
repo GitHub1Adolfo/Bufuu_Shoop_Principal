@@ -1,0 +1,247 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_cart.css' %}">
+    <title>Carrito de Compras - BuFuu GrowShop</title>
+</head>
+
+<body>
+    {% include 'modern_navbar.html' %}
+    
+    <main class="cart-page">
+        <div class="container">
+            <!-- Cart Header -->
+            <div class="cart-header fade-in">
+                <h1 class="cart-title">🛒 Tu Carrito de Compras</h1>
+                <p class="cart-subtitle">Revisa tus productos antes de finalizar la compra</p>
+            </div>
+
+            {% if carrito %}
+                <div class="cart-container">
+                    <!-- Cart Items -->
+                    <div class="cart-items">
+                        {% for item in carrito %}
+                        <div class="cart-item">
+                            <!-- Item Image -->
+                            {% if item.producto.imagen %}
+                                <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="cart-item-image">
+                            {% else %}
+                                <div class="cart-item-image" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);">
+                                    <span style="font-size: 2rem;">📦</span>
+                                </div>
+                            {% endif %}
+
+                            <!-- Item Details -->
+                            <div class="cart-item-details">
+                                <h3 class="cart-item-name">{{ item.producto.nombre }}</h3>
+                                <p class="cart-item-price">${{ item.producto.precio|floatformat:0|intcomma }}</p>
+                                
+                                <!-- Quantity Controls -->
+                                <div class="cart-item-quantity">
+                                    <span class="quantity-label">Cantidad:</span>
+                                    <form action="{% url 'actualizar_cantidad' item.id %}" method="post" class="quantity-controls">
+                                        {% csrf_token %}
+                                        <button type="submit" name="action" value="decrease" class="quantity-btn" {% if item.cantidad <= 1 %}disabled{% endif %}>
+                                            -
+                                        </button>
+                                        <span class="quantity-value">{{ item.cantidad }}</span>
+                                        <button type="submit" name="action" value="increase" class="quantity-btn">
+                                            +
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Item Actions -->
+                            <div class="cart-item-actions">
+                                <div class="cart-item-total">
+                                    ${{ item.total|floatformat:0|intcomma }}
+                                </div>
+                                <form action="{% url 'eliminar_del_carrito' item.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-remove" onclick="return confirm('¿Eliminar este producto del carrito?')">
+                                        🗑️ Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Cart Summary -->
+                    <aside class="cart-summary">
+                        <div class="summary-card">
+                            <h2 class="summary-title">Resumen del Pedido</h2>
+                            
+                            <div class="summary-row">
+                                <span class="summary-label">Subtotal:</span>
+                                <span class="summary-value">${{ total|floatformat:0|intcomma }}</span>
+                            </div>
+                            
+                            <div class="summary-row">
+                                <span class="summary-label">Envío:</span>
+                                <span class="summary-value" style="color: #10b981;">Gratis</span>
+                            </div>
+                            
+                            <div class="summary-row">
+                                <span class="summary-label">Descuento:</span>
+                                <span class="summary-value">-$0</span>
+                            </div>
+                            
+                            <div class="summary-row total">
+                                <span class="summary-label">Total:</span>
+                                <span class="summary-value">${{ total|floatformat:0|intcomma }}</span>
+                            </div>
+
+                            <!-- Promo Code -->
+                            <div class="promo-section">
+                                <label class="promo-label">Código de descuento</label>
+                                <div class="promo-input-group">
+                                    <input type="text" class="promo-input" placeholder="Ingresa tu código">
+                                    <button type="button" class="btn-promo">Aplicar</button>
+                                </div>
+                            </div>
+
+                            <!-- Checkout Button -->
+                            <a href="{% url 'checkout' %}" class="btn-checkout">
+                                Proceder al Pago
+                            </a>
+
+                            <!-- Continue Shopping -->
+                            <a href="{% url 'menu' %}" class="btn-continue">
+                                Seguir Comprando
+                            </a>
+
+                            <!-- Trust Badges -->
+                            <div class="trust-badges">
+                                <div class="trust-badge">
+                                    <div class="trust-badge-icon">🔒</div>
+                                    <div>Pago Seguro</div>
+                                </div>
+                                <div class="trust-badge">
+                                    <div class="trust-badge-icon">🚚</div>
+                                    <div>Envío Gratis</div>
+                                </div>
+                                <div class="trust-badge">
+                                    <div class="trust-badge-icon">↩️</div>
+                                    <div>Garantía</div>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            {% else %}
+                <!-- Empty Cart -->
+                <div class="empty-cart">
+                    <div class="empty-cart-icon">🛒</div>
+                    <h2 class="empty-cart-title">Tu carrito está vacío</h2>
+                    <p class="empty-cart-text">¡Descubre nuestros increíbles productos y comienza a comprar!</p>
+                    <a href="{% url 'menu' %}" class="btn-checkout" style="max-width: 300px; margin: 0 auto;">
+                        Ver Productos
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Messages Display -->
+    {% if messages %}
+        <div style="position: fixed; top: 5rem; right: 1rem; z-index: 9999; max-width: 400px;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" style="animation: slideInRight 0.5s ease; margin-bottom: 0.5rem;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Scripts -->
+    <script>
+        // Update cart count in navbar
+        function updateCartCount() {
+            const cartItems = document.querySelectorAll('.cart-item').length;
+            const cartBadge = document.querySelector('.cart-badge');
+            if (cartBadge) {
+                cartBadge.textContent = cartItems;
+            }
+        }
+
+        // Call on page load
+        updateCartCount();
+
+        // Promo code functionality (placeholder)
+        const promoBtn = document.querySelector('.btn-promo');
+        if (promoBtn) {
+            promoBtn.addEventListener('click', function() {
+                const promoInput = document.querySelector('.promo-input');
+                const code = promoInput.value.trim();
+                
+                if (code) {
+                    // Here you would typically send the code to the server
+                    alert('Funcionalidad de código promocional próximamente');
+                    promoInput.value = '';
+                } else {
+                    alert('Por favor ingresa un código válido');
+                }
+            });
+        }
+
+        // Auto-hide messages after 5 seconds
+        setTimeout(function() {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(function(message) {
+                message.style.animation = 'slideOutRight 0.5s ease forwards';
+                setTimeout(function() {
+                    message.remove();
+                }, 500);
+            });
+        }, 5000);
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+
+    <style>
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideOutRight {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+    </style>
+
+    {% include 'footer.html' %}
+
+</body>
+
+</html>

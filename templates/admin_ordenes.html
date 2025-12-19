@@ -1,0 +1,139 @@
+{% load tz %}
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/admin_ordenes_lista.css' %}">
+    <title>Gestión de Órdenes</title>
+</head>
+
+<body>
+    {% include 'modern_navbar.html' %}
+    
+    <div class="admin-page">
+        <div class="admin-container">
+            <!-- Header con Estadísticas -->
+            <div class="header-stats">
+                <h1>📦 Gestión de Órdenes</h1>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-info">
+                            <div class="stat-value">{{ stats.pendientes }}</div>
+                            <div class="stat-label">Pendientes</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <div class="stat-value">{{ stats.aprobadas }}</div>
+                            <div class="stat-label">Aprobadas</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <div class="stat-value">${{ stats.total_ventas|floatformat:0|intcomma }}</div>
+                            <div class="stat-label">Total Ventas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filters-card">
+                <form method="GET" class="filters-form">
+                    <select name="estado" onchange="this.form.submit()" class="filter-select">
+                        <option value="todos" {% if estado_filter == 'todos' %}selected{% endif %}>Todas las órdenes</option>
+                        <option value="pendiente_revision" {% if estado_filter == 'pendiente_revision' %}selected{% endif %}>Pendientes</option>
+                        <option value="aprobada" {% if estado_filter == 'aprobada' %}selected{% endif %}>Aprobadas</option>
+                        <option value="pagado" {% if estado_filter == 'pagado' %}selected{% endif %}>Pagadas</option>
+                        <option value="cancelado" {% if estado_filter == 'cancelado' %}selected{% endif %}>Canceladas</option>
+                    </select>
+                </form>
+            </div>
+
+            <!-- Tabla de Órdenes -->
+            <div class="ordenes-card">
+                {% if ordenes %}
+                <div class="table-responsive">
+                    <table class="ordenes-table">
+                        <thead>
+                            <tr>
+                                <th>Orden ID</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Método Pago</th>
+                                <th>QR Admin</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for orden in ordenes %}
+                            <tr>
+                                <td class="orden-id-cell">#{{ orden.orden_id }}</td>
+                                <td>
+                                    <div class="cliente-cell">
+                                        <div class="cliente-name">{{ orden.user.get_full_name|default:orden.user.username }}</div>
+                                        <div class="cliente-email">{{ orden.user.email }}</div>
+                                    </div>
+                                </td>
+                                <td>{{ orden.fecha|localtime|date:"d/m/Y H:i" }}</td>
+                                <td class="total-cell">${{ orden.total|floatformat:0|intcomma }}</td>
+                                <td>
+                                    <span class="badge badge-{{ orden.estado }}">
+                                        {{ orden.get_estado_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if orden.pago %}
+                                        {{ orden.pago.get_metodo_pago_display }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'ver_qr_orden' orden.orden_id %}" class="btn-qr" title="Escanear para editar">
+                                        📱 QR
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="actions-cell">
+                                        {% if orden.estado == 'pendiente_revision' %}
+                                        <a href="{% url 'editar_orden' orden.orden_id %}" class="btn-action btn-edit">
+                                            ✏️ Editar
+                                        </a>
+                                        {% else %}
+                                        <a href="{% url 'ver_qr_orden' orden.orden_id %}" class="btn-action btn-view">
+                                            👁️ Ver
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <h3>No hay órdenes</h3>
+                    <p>Las nuevas órdenes aparecerán aquí</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

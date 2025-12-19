@@ -1,0 +1,125 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mis_ordenes.css' %}">
+    <title>Mis Órdenes - BuFuu GrowShop</title>
+</head>
+
+<body>
+    {% include 'modern_navbar.html' %}
+    
+    <div class="ordenes-page">
+        <div class="ordenes-container">
+            <!-- Header -->
+            <div class="page-header">
+                <h1>📦 Mis Órdenes</h1>
+                <p>Historial completo de tus compras</p>
+            </div>
+
+            {% if ordenes %}
+            <!-- Lista de Órdenes -->
+            <div class="ordenes-grid">
+                {% for orden in ordenes %}
+                <div class="orden-card">
+                    <!-- Header de la Orden -->
+                    <div class="orden-card-header">
+                        <div class="orden-info">
+                            <div class="orden-id">#{{ orden.orden_id }}</div>
+                            <div class="orden-fecha">{{ orden.fecha|date:"d/m/Y H:i" }}</div>
+                        </div>
+                        <div class="orden-estado">
+                            <span class="badge badge-{{ orden.estado }}">
+                                {{ orden.get_estado_display }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Items Preview -->
+                    <div class="orden-items">
+                        {% for item in orden.items.all|slice:":3" %}
+                        <div class="item-preview">
+                            {% if item.producto.imagen %}
+                            <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="item-img">
+                            {% else %}
+                            <div class="item-img-placeholder">📦</div>
+                            {% endif %}
+                            <div class="item-info">
+                                <div class="item-name">{{ item.producto.nombre }}</div>
+                                <div class="item-cantidad">x{{ item.cantidad }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        {% if orden.items.count > 3 %}
+                        <div class="items-more">
+                            +{{ orden.items.count|add:"-3" }} más
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Total -->
+                    <div class="orden-total">
+                        <span class="total-label">Total:</span>
+                        <span class="total-value">${{ orden.total|floatformat:0|intcomma }}</span>
+                    </div>
+
+                    <!-- Método de Pago -->
+                    {% if orden.pago %}
+                    <div class="orden-pago">
+                        <span class="pago-icon">
+                            {% if orden.pago.metodo_pago == 'mercadopago' %}💳
+                            {% elif orden.pago.metodo_pago == 'transferencia' %}🏦
+                            {% else %}💵{% endif %}
+                        </span>
+                        <span class="pago-metodo">{{ orden.pago.get_metodo_pago_display }}</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Acciones -->
+                    <div class="orden-actions">
+
+                        {% if orden.estado in 'pendiente_revision,pendiente' %}
+                            <!-- ORDEN EN REVISIÓN (MUESTRA 2 QR) -->
+                            <a href="{% url 'ver_qr_cliente' orden.orden_id %}" class="btn-action btn-qr">
+                                📱 Ver QR
+                            </a>
+
+                            <a href="{% url 'ver_qr_orden' orden.orden_id %}" class="btn-action btn-qr">
+                                👁️ Ver Estado
+                            </a>
+
+                        {% elif orden.estado in 'aprobada,pagado,completado' %}
+                            <!-- ORDEN FINALIZADA -->
+
+                            <a href="{% url 'ver_qr_orden' orden.orden_id %}"
+                            class="btn-action btn-boleta">
+                                🧾 Ver Boleta
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-icon">📭</div>
+                <h2>No tienes órdenes aún</h2>
+                <p>Tus compras aparecerán aquí</p>
+                <a href="{% url 'menu' %}" class="btn-shop">
+                    🛍️ Ir a Comprar
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,405 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/agregar_producto.css' %}">
+    <title>Agregar Producto - BuFuu GrowShop</title>
+    <style>
+        /* Estilos específicos para agregar producto */
+        .form-page {
+            min-height: calc(100vh - 500px);
+            padding: 3rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            font-size: 1rem;
+            color: black; /* var(--text-secondary) */
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #10b981; /* var(--text-primary) */
+            font-size: 0.875rem;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-file {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 0.9375rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-file:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-file {
+            padding: 0.5rem;
+        }
+
+        .form-help {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.8125rem;
+            color: black; /* var(--text-secondary) */
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-cancel {
+            width: 100%;
+            padding: 0.875rem 2rem;
+            background: transparent;
+            color: black; /* var(--text-secondary) */
+            border: 2px solid var(--border-color);
+            font-weight: 600;
+            font-size: 0.9375rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-cancel:hover {
+            background: var(--bg-secondary);
+            border-color: var(--text-secondary);
+        }
+
+        .error-message {
+            padding: 0.75rem 1rem;
+            background: #fee2e2;
+            border: 2px solid #ef4444;
+            border-radius: 0.5rem;
+            color: #991b1b;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            padding: 0.75rem 1rem;
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            border-radius: 0.5rem;
+            color: #065f46;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .form-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-page {
+                padding: 2rem 1rem;
+            }
+
+            .form-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    {% include 'modern_navbar.html' %}
+
+    <main class="form-page">
+        <div class="form-container">
+            <!-- Header -->
+            <div class="form-header">
+                <h1 class="form-title">➕ Agregar Nuevo Producto</h1>
+                <p class="form-subtitle">Completa la información del producto</p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'success' %}success-message{% else %}error-message{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Form -->
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- Nombre del Producto -->
+                <div class="form-group">
+                    <label for="{{ form.nombre.id_for_label }}" class="form-label">
+                        Nombre del Producto *
+                    </label>
+                    {{ form.nombre }}
+                    {% if form.nombre.errors %}
+                        <div class="error-message">
+                            {% for error in form.nombre.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <span class="form-help">Ingresa un nombre descriptivo para el producto</span>
+                </div>
+
+                <!-- Precio -->
+                <div class="form-group">
+                    <label for="{{ form.precio.id_for_label }}" class="form-label">
+                        Precio (CLP) *
+                    </label>
+                    {{ form.precio }}
+                    {% if form.precio.errors %}
+                        <div class="error-message">
+                            {% for error in form.precio.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <span class="form-help">Precio en pesos chilenos (sin puntos ni comas)</span>
+                </div>
+
+                <!-- Imagen -->
+                <div class="form-group">
+                    <label for="{{ form.imagen.id_for_label }}" class="form-label">
+                        Imagen del Producto
+                    </label>
+                    {{ form.imagen }}
+                    {% if form.imagen.errors %}
+                        <div class="error-message">
+                            {% for error in form.imagen.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <span class="form-help">Formatos aceptados: JPG, PNG, GIF (máx. 5MB)</span>
+                </div>
+
+
+                <!-- Categoría -->
+                <div class="form-group">
+                    <label for="{{ form.categoria.id_for_label }}" class="form-label">
+                        Categoría
+                    </label>
+                    {{ form.categoria }}
+                    <span class="form-help">
+                        ¿No existe? <a href="{% url 'categorias' %}">Crear categoría</a>
+                    </span>
+                </div>
+
+                <!-- Estrellas (Calificación) -->
+                <div class="form-group">
+                    <label for="{{ form.estrellas.id_for_label }}" class="form-label">
+                        Calificación (Estrellas) *
+                    </label>
+                    {{ form.estrellas }}
+                    {% if form.estrellas.errors %}
+                        <div class="error-message">
+                            {% for error in form.estrellas.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <span class="form-help">Calificación de 0 a 5 estrellas</span>
+                </div>
+
+                <!-- Buttons -->
+                <button type="submit" class="btn-submit">
+                    💾 Guardar Producto
+                </button>
+
+                <a href="{% url 'menu' %}" class="btn-cancel">
+                    ← Volver al Menú
+                </a>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    {% include 'footer.html' %}
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add proper classes to form fields
+            const inputs = document.querySelectorAll('input[type="text"], input[type="number"], textarea, input[type="file"]');
+            
+            inputs.forEach(input => {
+                if (input.type === 'file') {
+                    input.classList.add('form-file');
+                } else if (input.tagName === 'TEXTAREA') {
+                    input.classList.add('form-textarea');
+                } else {
+                    input.classList.add('form-input');
+                }
+                
+                // Add placeholder if missing
+                if (!input.placeholder) {
+                    if (input.name === 'nombre') {
+                        input.placeholder = 'Ej: Fertilizante Orgánico 1L';
+                    } else if (input.name === 'precio') {
+                        input.placeholder = 'Ej: 15990';
+                    } else if (input.name === 'estrellas') {
+                        input.placeholder = 'Ej: 5';
+                    }
+                }
+            });
+
+            // Validate precio (only numbers)
+            const precioInput = document.querySelector('input[name="precio"]');
+            if (precioInput) {
+                precioInput.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                });
+            }
+
+            // Validate estrellas (0-5)
+            const estrellasInput = document.querySelector('input[name="estrellas"]');
+            if (estrellasInput) {
+                estrellasInput.addEventListener('input', function(e) {
+                    let value = parseInt(this.value);
+                    if (value < 0) this.value = 0;
+                    if (value > 5) this.value = 5;
+                });
+            }
+
+            // Preview image
+            const imageInput = document.querySelector('input[type="file"]');
+            if (imageInput) {
+                imageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            // You can add image preview here if needed
+                            console.log('Imagen seleccionada:', file.name);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Auto-dismiss messages
+            setTimeout(function() {
+                const messages = document.querySelectorAll('.success-message, .error-message');
+                messages.forEach(function(message) {
+                    message.style.animation = 'fadeOut 0.5s ease forwards';
+                    setTimeout(function() {
+                        message.remove();
+                    }, 500);
+                });
+            }, 5000);
+        });
+
+        
+        
+    </script>
+</body>
+
+</html>

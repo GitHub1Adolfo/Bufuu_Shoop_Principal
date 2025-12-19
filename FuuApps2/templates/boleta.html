@@ -1,0 +1,137 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Boleta de Compra</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 386px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            border-top: 2.1px dashed rgb(0, 0, 0);
+            border-bottom: 2.1px dashed rgb(0, 0, 0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .boleta-header {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            width: 100%;
+        }
+
+        .boleta-header strong {
+            font-size: 20px;
+        }
+
+        .boleta-header small {
+            display: block;
+            font-size: 12px;
+        }
+
+        .table {
+            width: 100%;
+            margin-top: 15px;
+            font-size: 12px;
+            table-layout: auto;
+            text-align: center;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            padding: 6px;
+            overflow: visible;
+            white-space: nowrap;
+        }
+
+        .table td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table .total {
+            font-weight: bold;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header with store name and date -->
+        <div class="boleta-header">
+            <strong>Mi Tienda</strong>
+            <small>Boleta de Compra</small>
+            <small>Fecha: {{ today }}</small>
+        </div>
+
+        <!-- Products Table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cant.</th>
+                    <th>Unit.</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.producto.nombre }}</td>
+                    <td>{{ item.cantidad }}</td>
+                    <td>${{ item.producto.precio|floatformat:0|intcomma }}</td>
+                    <td>${{ item.total_producto|floatformat:0|intcomma }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="total">
+                    <td colspan="3" class="text-center">Total General:</td>
+                    <td>${{ total|floatformat:0|intcomma }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Footer with return button -->
+        <a href="{% url 'menu' %}" class="btn">Volver al Menú</a>
+    </div>
+</body>
+
+</html>

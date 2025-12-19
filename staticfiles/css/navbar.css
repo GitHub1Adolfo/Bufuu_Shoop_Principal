@@ -1,0 +1,114 @@
+/* ==============================
+   RESET BÁSICO (NO TOCAR)
+   ============================== */
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* ==============================
+   HEADER / NAVBAR CON IMAGEN
+   ============================== */
+.header {
+    width: 100%;
+
+    /* 🔧 1) AQUÍ CAMBIAS EL TAMAÑO VISUAL DE LA IMAGEN */
+    /* Más grande = aumenta este valor */
+    height: 300px;          /* ← EDITA ESTE VALOR */
+
+    margin: -200;
+    padding: 0;
+
+    /* 🔧 2) AQUÍ CAMBIAS LA IMAGEN */
+    background-image: url("../img/navbarbufuu2.png"); /* ← CAMBIA AQUÍ SI USAS OTRA */
+
+    /* 🔧 3) MODO DE ESCALADO (NO TOCAR NORMALMENTE) */
+    background-size: cover; /* cover = rellena todo */
+
+    /* 🔧 4) AQUÍ MUEVES LA IMAGEN DENTRO DEL HEADER */
+    /* center = centrada */
+    /* Ejemplos:
+       center top
+       center 30%
+       center 10%
+    */
+    background-position: center;  /* ← EDITA SI QUIERES SUBIR/BAJAR LA IMAGEN */
+
+    background-repeat: no-repeat;
+    display: block;
+}
+
+/* 🚫 NO USAR IMG DENTRO DEL HEADER */
+.header img {
+    display: none !important;
+}
+
+/* ==============================
+   NAV FULL WIDTH
+   ============================== */
+nav {
+    width: 100%;
+    margin: 0;
+    padding: 8px 0;
+    background-color: #0f3d2eea;
+    border-radius: 0;
+}
+
+/* CONTENIDO CENTRADO, FONDO FULL */
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 0;
+    padding: 0;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    padding: 0 14px;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #a957f5d4;
+}
+
+.boton-carrito {
+    width: 110px;
+    height: 40px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 12px;
+}
+
+/* ==============================
+   RESPONSIVE (EDITABLE)
+   ============================== */
+@media (max-width: 768px) {
+    .header {
+        height: 220px;   /* ← EDITA PARA MOBILE */
+    }
+
+    nav ul {
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .nav-link {
+        font-size: 16px;
+    }
+}

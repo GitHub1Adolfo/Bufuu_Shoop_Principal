@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_auth.css' %}">
+    <title>Iniciar Sesión - BuFuu GrowShop</title>
+</head>
+
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <!-- Logo Section -->
+            <div class="auth-logo">
+                <div class="auth-logo-img" style="font-size: 4rem;">🌿</div>
+                <h1 class="auth-title">¡Bienvenido de vuelta!</h1>
+                <p class="auth-subtitle">Inicia sesión para continuar tu experiencia</p>
+            </div>
+
+            <!-- Success Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        <div class="success-message">
+                            {{ message }}
+                        </div>
+                    {% elif message.tags == 'error' %}
+                        <div class="error-message">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <!-- Error Messages -->
+            {% if form.errors %}
+                <div class="error-message">
+                    Nombre de usuario o contraseña incorrectos
+                </div>
+            {% endif %}
+
+            <!-- Login Form -->
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                
+                <!-- Username Field -->
+                <div class="form-group {% if form.username.errors %}has-error{% endif %}">
+                    <label for="id_username" class="form-label">Nombre de Usuario</label>
+                    <div class="form-input-wrapper">
+                        <input 
+                            type="text" 
+                            id="id_username" 
+                            name="username" 
+                            class="form-input" 
+                            placeholder="Ingresa tu usuario"
+                            required
+                            autofocus
+                        >
+                        <span class="form-icon">👤</span>
+                    </div>
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <span class="form-error-message">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group {% if form.password.errors %}has-error{% endif %}">
+                    <label for="id_password" class="form-label">Contraseña</label>
+                    <div class="form-input-wrapper">
+                        <input 
+                            type="password" 
+                            id="id_password" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="Ingresa tu contraseña"
+                            required
+                        >
+                        <span class="form-icon password-toggle" style="cursor: pointer;">🔒</span>
+                    </div>
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <span class="form-error-message">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex justify-between items-center" style="margin-top: 0.5rem;">
+                    <div class="form-checkbox-group">
+                        <input type="checkbox" id="remember" name="remember" class="form-checkbox">
+                        <label for="remember" class="form-checkbox-label">Recordarme</label>
+                    </div>
+                    
+                    <div class="forgot-password">
+                        <a href="{% url 'password_reset' %}" class="forgot-password-link">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="auth-divider">
+                <span class="auth-divider-text">o</span>
+            </div>
+
+            <!-- Register Link -->
+            <div class="auth-alternate">
+                ¿No tienes una cuenta? 
+                <a href="{% url 'register' %}" class="auth-link">Regístrate aquí</a>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="auth-links" style="margin-top: 1rem;">
+                <a href="{% url 'inicio' %}" class="auth-link">← Volver al inicio</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Show/Hide Password Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password toggle
+            const passwordInput = document.getElementById('id_password');
+            const passwordToggle = document.querySelector('.password-toggle');
+            
+            if (passwordToggle) {
+                passwordToggle.addEventListener('click', function() {
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        passwordToggle.textContent = '🔓';
+                    } else {
+                        passwordInput.type = 'password';
+                        passwordToggle.textContent = '🔒';
+                    }
+                });
+            }
+        });
+
+        // Auto-dismiss messages after 5 seconds
+        setTimeout(function() {
+            const messages = document.querySelectorAll('.success-message, .error-message');
+            messages.forEach(function(message) {
+                message.style.animation = 'fadeOut 0.5s ease forwards';
+                setTimeout(function() {
+                    message.remove();
+                }, 500);
+            });
+        }, 5000);
+    </script>
+
+    <style>
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+
+</body>
+
+</html>

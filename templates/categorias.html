@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Categorías | BuFuu GrowShop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSS base del proyecto -->
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_navbar.css' %}">
+
+    <style>
+        .page-wrapper {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+        }
+
+        .card h1, .card h2 {
+            margin-bottom: 1rem;
+            font-weight: 800;
+            color: #10b981;
+        }
+
+        .text-muted {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-info {
+            display: flex;
+            flex-direction: column;
+            color: #000000;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid #e5e7eb;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #fff;
+        }
+
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-info strong {
+            font-size: 1.05rem;
+        }
+
+        .category-info span {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 1.5rem 0;
+        }
+
+        .messages {
+            margin-bottom: 1rem;
+        }
+
+        .messages div {
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .messages .success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .messages .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+{% include 'modern_navbar.html' %}
+
+<main class="page-wrapper">
+
+    <!-- MENSAJES -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- CREAR CATEGORÍA -->
+    <section class="card">
+        <h1>🏷️ Gestión de Categorías</h1>
+        <p class="text-muted">Crea, visualiza y elimina categorías de productos.</p>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                {{ form.nombre }}
+                <button type="submit" class="btn btn-primary">
+                    ➕ Crear Categoría
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- LISTADO -->
+    <section class="card">
+        <h2>📂 Categorías existentes</h2>
+
+        {% if categorias %}
+            <ul class="category-list">
+                {% for categoria in categorias %}
+                    <li class="category-item">
+                        <div class="category-info">
+                            <strong>{{ categoria.nombre }}</strong><br>
+                            <span>{{ categoria.productos.count }} producto(s)</span>
+                        </div>
+
+                        <form method="post" action="{% url 'eliminar_categoria' categoria.id %}">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    onclick="return confirm('¿Eliminar la categoría {{ categoria.nombre }}?')">
+                                🗑️ Eliminar
+                            </button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <div class="empty">
+                No hay categorías creadas todavía.
+            </div>
+        {% endif %}
+    </section>
+
+</main>
+
+</body>
+</html>

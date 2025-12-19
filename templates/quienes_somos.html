@@ -1,0 +1,437 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_navbar.css' %}">
+    <title>Quiénes Somos - BuFuu GrowShop</title>
+    <style>
+        /* Estilos específicos para Quiénes Somos */
+        .about-page {
+            min-height: calc(100vh - 500px);
+            padding: 3rem 1rem 5rem 1rem;
+        }
+
+        .about-hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .about-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .about-subtitle {
+            font-size: 1.25rem;
+            color: black; /* var(--text-secondary) */
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .about-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-section {
+            background: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            animation: slideUp 0.8s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #10b981; /* var(--text-primary) */
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-icon {
+            font-size: 2.5rem;
+        }
+
+        .section-text {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: black; /* var(--text-secondary) */
+            margin-bottom: 1rem;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .value-card {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .value-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: black; /* var(--text-primary) */
+            margin-bottom: 0.75rem;
+        }
+
+        .value-description {
+            font-size: 1rem;
+            color: black; /* var(--text-secondary) */
+            line-height: 1.6;
+        }
+
+        .team-section {
+            margin-top: 3rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .team-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: black; /* var(--text-primary) */
+            margin-bottom: 0.5rem;
+        }
+
+        .team-role {
+            font-size: 1rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .team-description {
+            font-size: 0.9375rem;
+            color: black; /* var(--text-secondary) */
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 1rem;
+            color: white;
+            margin-top: 3rem;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+        }
+
+        .cta-text {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.25rem 2.5rem;
+            background: white;
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 1.125rem;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .about-title {
+                font-size: 2.5rem;
+            }
+
+            .about-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.75rem;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .about-title {
+                font-size: 2rem;
+            }
+
+            .about-section {
+                padding: 1.5rem 1rem;
+            }
+
+            .values-grid,
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'modern_navbar.html' %}
+
+    <main class="about-page">
+        <div class="about-content">
+            <!-- Hero Section -->
+            <div class="about-hero">
+                <h1 class="about-title">👥 Quiénes Somos</h1>
+                <p class="about-subtitle">
+                    Somos BuFuu GrowShop, tu aliado de confianza en el mundo del cultivo cannábico.
+                    Con años de experiencia y pasión por la calidad, nos dedicamos a ofrecer
+                    los mejores productos y asesoría para tus proyectos de cultivo.
+                </p>
+            </div>
+
+            <!-- Nuestra Historia -->
+            <div class="about-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🌱</span>
+                    Nuestra Historia
+                </h2>
+                <p class="section-text">
+                    Fundada en 2020, BuFuu GrowShop nació de la pasión de un grupo de cultivadores
+                    que buscaban compartir su conocimiento y experiencia con la comunidad cannábica.
+                    Comenzamos como una pequeña tienda local y hemos crecido hasta convertirnos en
+                    una referencia en el sector, manteniendo siempre nuestro compromiso con la
+                    calidad y el servicio personalizado.
+                </p>
+                <p class="section-text">
+                    Hoy en día, servimos a miles de clientes satisfechos en toda la región,
+                    ofreciendo una amplia gama de productos cuidadosamente seleccionados y
+                    asesoría experta para cada etapa del cultivo.
+                </p>
+            </div>
+
+            <!-- Nuestros Valores -->
+            <div class="about-section">
+                <h2 class="section-title">
+                    <span class="section-icon">⭐</span>
+                    Nuestros Valores
+                </h2>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <div class="value-icon">🎯</div>
+                        <h3 class="value-title">Calidad</h3>
+                        <p class="value-description">
+                            Seleccionamos cuidadosamente cada producto para garantizar
+                            los mejores resultados en tu cultivo.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">🤝</div>
+                        <h3 class="value-title">Confianza</h3>
+                        <p class="value-description">
+                            Construimos relaciones duraderas basadas en la transparencia
+                            y el servicio honesto.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">📚</div>
+                        <h3 class="value-title">Conocimiento</h3>
+                        <p class="value-description">
+                            Compartimos nuestra experiencia y asesoramos en cada paso
+                            del proceso de cultivo.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">🔒</div>
+                        <h3 class="value-title">Discreción</h3>
+                        <p class="value-description">
+                            Tu privacidad es nuestra prioridad. Embalaje discreto y
+                            servicio confidencial.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nuestro Equipo -->
+            <div class="about-section team-section">
+                <h2 class="section-title">
+                    <span class="section-icon">👨‍👩‍👧‍👦</span>
+                    Nuestro Equipo
+                </h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-avatar">👨‍💻</div>
+                        <h3 class="team-name">Cristian Pino</h3>
+                        <p class="team-role">Fundador & CEO</p>
+                        <p class="team-description">
+                            Estudiante Avanzado de Ingeniería en Informática. 
+                            Especialista en desarrollo Backend (Python/Django) y análisis de datos.
+                        </p>
+                    </div>
+
+                    <div class="team-member">
+                        <div class="team-avatar">👩‍🔬</div>
+                        <h3 class="team-name">María González</h3>
+                        <p class="team-role">Asesora Técnica</p>
+                        <p class="team-description">
+                            Agrónoma especializada en nutrición vegetal y control
+                            de plagas ecológico.
+                        </p>
+                    </div>
+
+                    <div class="team-member">
+                        <div class="team-avatar">👨‍💼</div>
+                        <h3 class="team-name">Javier Silva</h3>
+                        <p class="team-role">Atención al Cliente</p>
+                        <p class="team-description">
+                            Experto en servicio al cliente y logística. Siempre
+                            disponible para ayudarte.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <h2 class="cta-title">¿Listo para comenzar?</h2>
+                <p class="cta-text">
+                    Descubre nuestra selección de productos premium y comienza
+                    tu proyecto de cultivo hoy mismo.
+                </p>
+                <a href="{% url 'menu' %}" class="cta-button">
+                    🛍️ Ver Productos
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    {% include 'footer.html' %}
+
+    <!-- Messages Display -->
+    {% if messages %}
+        <div style="position: fixed; top: 5rem; right: 1rem; z-index: 9999; max-width: 400px;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" style="animation: slideIn 0.5s ease; margin-bottom: 0.5rem;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <script>
+        // Auto-dismiss messages
+        setTimeout(function() {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(function(message) {
+                message.style.animation = 'fadeOut 0.5s ease forwards';
+                setTimeout(function() {
+                    message.remove();
+                }, 500);
+            });
+        }, 5000);
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,198 @@
+/* Estilos Globales y de Layout - VERSIÓN CORREGIDA */
+
+html {
+    height: 100%;
+    scroll-behavior: smooth;
+    /* Previene que el contenido quede oculto detrás del footer */
+    scroll-padding-bottom: 80px;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    background-image: url('../img/background.png');
+    min-height: 100vh;
+    margin: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    /* CORRECCIÓN PRINCIPAL: Espacio para el footer fixed */
+    padding-bottom: 80px;
+}
+
+.content {
+    flex: 1;
+    padding-bottom: 2rem;
+}
+
+.container {
+    min-height: 100%;
+    position: relative;
+    padding-bottom: 2rem; /* Espacio adicional antes del footer */
+}
+
+.section {
+    padding: 20px;
+    margin: 20px 0;
+    min-height: auto; /* Cambiar de 100vh a auto para evitar problemas */
+}
+
+.fondo-texto,
+h2 {
+    background-color: #ffffffd4;
+    padding: 20px;
+    text-align: center;
+    border-radius: 14px;
+}
+
+/* Estilos de Iconos y Redes Sociales */
+.face,
+.insta,
+.x {
+    max-width: 25px;
+    max-height: 25px;
+    margin-right: 0;
+}
+
+/* ========================================
+   FOOTER / CONTACT BAR - CORREGIDO
+   ======================================== */
+
+.contact-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #10b981; /* Verde moderno */
+    padding: 15px 20px;
+    color: white;
+    text-align: center;
+    z-index: 999;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.contact-link {
+    text-decoration: none;
+    color: white;
+    margin: 0 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+.footer {
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    margin-top: 20px;
+    background-color: #10b981;
+    /* NO usar position: absolute aquí */
+}
+
+/* Estilos de botones genéricos */
+.boton {
+    display: flex;
+    justify-content: center;
+}
+
+/* Estilos para el formulario de comentarios */
+#comment-form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#comment-form label {
+    font-weight: bold;
+}
+
+#comment-form input,
+#comment-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#comment-form button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#comment-form button:hover {
+    background-color: #45a049;
+}
+
+#comment-list {
+    margin-top: 20px;
+}
+
+.comment {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.comment p {
+    margin: 0;
+}
+
+/* Estilos de centrado de contenedores */
+.container2 {
+    width: 300px;
+    margin: 0 auto;
+    padding-top: 50px;
+    padding-bottom: 50px; /* Espacio para el footer */
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 100px; /* Más espacio en móviles */
+    }
+    
+    .contact-bar {
+        padding: 12px 15px;
+        font-size: 0.875rem;
+    }
+    
+    .contact-link {
+        margin: 0 8px;
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-bottom: 120px;
+    }
+    
+    .contact-bar {
+        padding: 10px;
+        font-size: 0.75rem;
+    }
+    
+    .contact-link {
+        display: inline-block;
+        margin: 5px;
+    }
+}

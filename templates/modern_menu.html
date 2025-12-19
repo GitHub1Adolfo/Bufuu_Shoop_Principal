@@ -1,0 +1,578 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_menu.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_search.css' %}">
+    <title>Menú - BuFuu GrowShop</title>
+    <style>
+        /* ESTILOS MEJORADOS PARA EDICIÓN DE PRODUCTOS */
+        
+        /* Admin Edit Section - Mejor organizado */
+        .admin-edit-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            border-radius: 0.75rem;
+            border: 2px dashed #e5e7eb;
+        }
+
+        .admin-edit-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #6b7280;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Formulario de Nombre */
+        .edit-name-form {
+            margin-bottom: 1rem;
+        }
+
+        .edit-name-input {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9375rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .edit-name-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Formulario de Precio */
+        .edit-price-form {
+            margin-bottom: 1rem;
+        }
+
+        .edit-price-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .edit-price-input {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .edit-price-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Botones de Guardar */
+        .btn-save {
+            padding: 0.625rem 1rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            white-space: nowrap;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-save:active {
+            transform: translateY(0);
+        }
+
+        /* Control de Estrellas Mejorado */
+        .stars-edit-section {
+            margin-bottom: 1rem;
+        }
+
+        .stars-edit-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stars-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .stars-display {
+            display: flex;
+            gap: 0.25rem;
+            font-size: 1.25rem;
+        }
+
+        .stars-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .star-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e5e7eb;
+            background: white;
+            color: #6b7280;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star-btn:hover {
+            border-color: #fbbf24;
+            background: #fef3c7;
+            color: #f59e0b;
+            transform: scale(1.1);
+        }
+
+        .star-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Botón Eliminar Mejorado */
+        .delete-section {
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn-delete-product {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-delete-product:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-delete-product:active {
+            transform: translateY(0);
+        }
+
+        /* Badge de Admin */
+        .admin-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.25rem 0.625rem;
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 9999px;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Separadores */
+        .edit-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 0.75rem 0;
+        }
+
+        /* Tooltips informativos */
+        .edit-help-text {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stars-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'modern_navbar.html' %}
+    
+    <main class="menu-section">
+        <div class="container">
+
+
+            <!-- Search Bar -->
+            <div class="search-wrapper">
+                <form method="get" action="{% url 'menu' %}" class="search-form">
+                    <input
+                        type="text"
+                        name="q"
+                        placeholder="🔍 Buscar productos..."
+                        value="{{ query }}"
+                        class="search-input"
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="search-btn" title="Buscar">
+                    </button>
+                </form>
+            </div>
+
+            <!-- Section Header -->
+            <div class="section-header fade-in">
+                <h1 class="section-title">🌿 Nuestros Productos</h1>
+                <p class="section-subtitle">Descubre nuestra selección premium de productos para cultivo</p>
+            </div>
+
+            <!-- Products Grid -->
+            {% if productos %}
+                <div class="products-grid">
+                    {% for producto in productos %}
+                    <div class="product-card fade-in">
+                        <!-- Product Image -->
+                        <div class="product-image-container">
+                            {% if producto.imagen %}
+                                <img class="product-image" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                            {% else %}
+                                <p class="no-image">📦 Sin imagen disponible</p>
+                            {% endif %}
+                            
+                            {% if producto.estrellas >= 4 %}
+                                <span class="product-badge">⭐ Popular</span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Product Content -->
+                        <div class="product-content">
+                            <!-- Normal View (No Admin) -->
+                            {% if not user.is_staff %}
+                                <h3 class="product-name">{{ producto.nombre }}</h3>
+                                <div class="product-price-container">
+                                    <span class="product-price">${{ producto.precio|floatformat:0|intcomma }}</span>
+                                </div>
+                            {% endif %}
+
+                            <!-- Star Rating -->
+                            <div class="product-rating">
+                                <div class="stars-container">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= producto.estrellas %}
+                                            <span class="star">⭐</span>
+                                        {% else %}
+                                            <span class="star empty">☆</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <span class="rating-count">({{ producto.estrellas }}/5)</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <div class="product-actions">
+                                <form action="{% url 'agregar_al_carrito' producto.id %}" method="post" style="flex: 1;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-add-cart">
+                                        Agregar al Carrito
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- ADMIN EDIT SECTION - MEJORADO -->
+                            {% if user.is_staff %}
+                                <div class="admin-edit-section">
+                                    <span class="admin-badge">
+                                        👑 Modo Administrador
+                                    </span>
+
+                                    <!-- Editar Nombre -->
+                                    <div class="edit-name-form">
+                                        <div class="admin-edit-title">
+                                            ✏️ Editar Nombre
+                                        </div>
+                                        <form action="{% url 'actualizar_nombre' producto.id %}" method="post">
+                                            {% csrf_token %}
+                                            <input 
+                                                type="text" 
+                                                name="nombre" 
+                                                value="{{ producto.nombre }}" 
+                                                class="edit-name-input"
+                                                placeholder="Nombre del producto"
+                                                required
+                                            >
+                                            <button type="submit" class="btn-save">
+                                                💾 Guardar Nombre
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div class="edit-divider"></div>
+
+                                    <!-- Editar Precio -->
+                                    <div class="edit-price-form">
+                                        <div class="admin-edit-title">
+                                            💰 Editar Precio
+                                        </div>
+                                        <form action="{% url 'actualizar_precio' producto.id %}" method="post">
+                                            {% csrf_token %}
+                                            <div class="edit-price-wrapper">
+                                                <input 
+                                                    type="number" 
+                                                    name="precio" 
+                                                    value="{{ producto.precio }}" 
+                                                    class="edit-price-input"
+                                                    placeholder="Precio"
+                                                    required 
+                                                    step="1"
+                                                    min="0"
+                                                >
+                                                <button type="submit" class="btn-save">
+                                                    💾 Guardar
+                                                </button>
+                                            </div>
+                                            <span class="edit-help-text">
+                                                💡 Precio en pesos chilenos (CLP)
+                                            </span>
+                                        </form>
+                                    </div>
+
+                                    <div class="edit-divider"></div>
+
+                                    <!-- Editar Estrellas -->
+                                    <div class="stars-edit-section">
+                                        <label class="stars-edit-label">
+                                            ⭐ Calificación del Producto
+                                        </label>
+                                        <form action="{% url 'actualizar_estrellas' producto.id %}" method="post">
+                                            {% csrf_token %}
+                                            <div class="stars-controls">
+                                                <div class="stars-display">
+                                                    {% for i in "12345" %}
+                                                        {% if forloop.counter <= producto.estrellas %}
+                                                            <span>⭐</span>
+                                                        {% else %}
+                                                            <span style="color: #d1d5db;">☆</span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <div class="stars-buttons">
+                                                    <button type="submit" name="action" value="decrease" class="star-btn" title="Disminuir">
+                                                        −
+                                                    </button>
+                                                    <button type="submit" name="action" value="increase" class="star-btn" title="Aumentar">
+                                                        +
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <span class="edit-help-text">
+                                            💡 Rango: 0 a 5 estrellas
+                                        </span>
+                                    </div>
+
+                                    <div class="edit-divider"></div>
+
+                                    <!-- Eliminar Producto -->
+                                    <div class="delete-section">
+                                        <form action="{% url 'eliminar_producto' producto.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button 
+                                                type="submit" 
+                                                class="btn-delete-product" 
+                                                onclick="return confirm('⚠️ ¿Estás seguro de eliminar este producto? Esta acción no se puede deshacer.')">
+                                                🗑️ Eliminar Producto
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="empty-state">
+                    <div class="empty-state-icon">🛒</div>
+                    <h2 class="empty-state-title">No hay productos disponibles</h2>
+                    <p class="empty-state-text">Vuelve pronto para ver nuestros productos</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Admin Floating Action Buttons -->
+    {% if user.is_staff %}
+        <div class="admin-panel">
+            <a href="{% url 'agregar_producto' %}" class="admin-fab" title="Agregar Producto">
+                ➕
+            </a>
+            <a href="/api/" class="admin-fab" title="Ver API" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);">
+                🔌
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <a href="tel:+56912345678" class="footer-link">📞 +569 1234 5678</a>
+            <span class="footer-divider">|</span>
+            <a href="mailto:bufuugrowshop@gmail.com" class="footer-link">📧 bufuugrowshop@gmail.com</a>
+            <span class="footer-divider">|</span>
+            <a href="https://www.instagram.com/bufuugrowshop" target="_blank" class="footer-link">📷 Instagram</a>
+            <span class="footer-divider">|</span>
+            <a href="https://www.facebook.com/bufuugrowshop" target="_blank" class="footer-link">📘 Facebook</a>
+        </div>
+    </footer>
+
+    <!-- Messages Display -->
+    {% if messages %}
+        <div style="position: fixed; top: 5rem; right: 1rem; z-index: 9999; max-width: 400px;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" style="animation: slideIn 0.5s ease; margin-bottom: 0.5rem;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <style>
+        /* Footer Fixed Styles */
+        .site-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .footer-divider {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        body {
+            padding-bottom: 60px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .alert {
+            animation: slideIn 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
+        }
+        
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .site-footer {
+                padding: 12px 15px;
+            }
+
+            .footer-content {
+                font-size: 0.8rem;
+                gap: 0.5rem;
+            }
+
+            .footer-divider {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-content {
+                flex-direction: column;
+                gap: 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            body {
+                padding-bottom: 100px;
+            }
+        }
+    </style>
+
+</body>
+
+</html>

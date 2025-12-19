@@ -1,0 +1,187 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_receipt.css' %}">
+    <title>¡Pago Exitoso! - BuFuu GrowShop</title>
+    <style>
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .success-animation {
+            animation: successZoom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes successZoom {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="receipt-page">
+        <div class="receipt-container success-animation">
+            <!-- Success Icon -->
+            <div class="receipt-header" style="padding: 3rem 2rem;">
+                <div class="receipt-icon" style="font-size: 5rem; animation: bounce 2s ease-in-out infinite;">
+                    ✓
+                </div>
+                <h1 class="receipt-store-name" style="margin-top: 1rem;">¡Pago Exitoso!</h1>
+                <p class="receipt-title">Tu compra ha sido procesada correctamente</p>
+            </div>
+
+            <!-- Receipt Body -->
+            <div class="receipt-body">
+                <!-- Success Message -->
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div class="success-badge" style="font-size: 1.125rem;">
+                        Orden confirmada
+                    </div>
+                </div>
+
+                <!-- Order Details -->
+                <div class="order-number">
+                    <div class="order-label">Número de Orden</div>
+                    <div class="order-id">#{{ orden.orden_id }}</div>
+                </div>
+
+                <!-- Payment Info -->
+                <div class="payment-method" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-color: #10b981;">
+                    <div class="payment-icon" style="background: #10b981;">✓</div>
+                    <div class="payment-details">
+                        <div class="payment-label">Estado del Pago</div>
+                        <div class="payment-value" style="color: #065f46;">Aprobado</div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="receipt-summary" style="margin-top: 2rem;">
+                    <div class="summary-row">
+                        <span class="summary-label">Monto Pagado:</span>
+                        <span class="summary-value">${{ pago.monto|floatformat:0|intcomma }}</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Método de Pago:</span>
+                        <span class="summary-value">{{ pago.get_metodo_pago_display }}</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span class="summary-label">Fecha:</span>
+                        <span class="summary-value">{{ pago.fecha_creacion|date:"d/m/Y H:i" }}</span>
+                    </div>
+                </div>
+
+                <!-- Next Steps -->
+                <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 1rem; margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-primary);">📦 ¿Qué sigue?</h3>
+                    <ul style="margin: 0; padding-left: 1.5rem; color: var(--text-secondary);">
+                        <li style="margin-bottom: 0.5rem;">Recibirás un email de confirmación</li>
+                        <li style="margin-bottom: 0.5rem;">Prepararemos tu pedido</li>
+                        <li style="margin-bottom: 0.5rem;">Te notificaremos cuando sea enviado</li>
+                        <li>Tiempo estimado de entrega: 3-5 días hábiles</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="receipt-footer">
+                <h3 class="receipt-message">¡Gracias por tu compra! 🎉</h3>
+                <p class="receipt-submessage">
+                    Tu pedido está siendo procesado
+                </p>
+
+                <div class="receipt-actions">
+                    <a href="{% url 'boleta' %}?orden_id={{ orden.orden_id }}" class="btn-primary-receipt">
+                        🧾 Ver Boleta Completa
+                    </a>
+                    
+                    <a href="{% url 'menu' %}" class="btn-secondary-receipt">
+                        🛍️ Seguir Comprando
+                    </a>
+                    
+                    <a href="{% url 'inicio' %}" class="btn-secondary-receipt">
+                        🏠 Volver al Inicio
+                    </a>
+                </div>
+            </div>
+
+            <!-- Store Info -->
+            <div class="store-info">
+                <div class="store-info-line">
+                    <strong>¿Necesitas ayuda?</strong>
+                </div>
+                <div class="store-info-line">
+                    📧 soporte@bufuu.cl
+                </div>
+                <div class="store-info-line">
+                    📞 +56 9 XXXX XXXX
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Effect -->
+    <script>
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#10b981', '#8b5cf6', '#f59e0b', '#ef4444', '#3b82f6'];
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 30);
+            }
+        }
+
+        // Trigger confetti on load
+        window.addEventListener('load', () => {
+            createConfetti();
+        });
+
+        // Auto-redirect after 30 seconds (optional)
+        // setTimeout(() => {
+        //     window.location.href = "{% url 'menu' %}";
+        // }, 30000);
+    </script>
+
+</body>
+
+</html>

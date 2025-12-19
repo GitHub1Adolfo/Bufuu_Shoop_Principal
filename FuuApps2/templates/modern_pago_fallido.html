@@ -1,0 +1,111 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_receipt.css' %}">
+    <title>Pago Fallido - BuFuu GrowShop</title>
+</head>
+
+<body>
+    <div class="receipt-page" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);">
+        <div class="receipt-container" style="animation: shake 0.5s ease;">
+            <!-- Error Header -->
+            <div class="receipt-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 3rem 2rem;">
+                <div class="receipt-icon" style="font-size: 5rem;">❌</div>
+                <h1 class="receipt-store-name" style="margin-top: 1rem;">Pago No Procesado</h1>
+                <p class="receipt-title">Hubo un problema con tu pago</p>
+            </div>
+
+            <!-- Error Body -->
+            <div class="receipt-body">
+                <!-- Error Message -->
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #991b1b; font-weight: 700; border-radius: 9999px; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);">
+                        ⚠️ Transacción Rechazada
+                    </div>
+                </div>
+
+                <!-- Possible Reasons -->
+                <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 1rem; margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                        🤔 Posibles razones
+                    </h3>
+                    <ul style="margin: 0; padding-left: 1.5rem; color: var(--text-secondary);">
+                        <li style="margin-bottom: 0.5rem;">Fondos insuficientes</li>
+                        <li style="margin-bottom: 0.5rem;">Datos de tarjeta incorrectos</li>
+                        <li style="margin-bottom: 0.5rem;">Tarjeta vencida</li>
+                        <li style="margin-bottom: 0.5rem;">Límite de compra excedido</li>
+                        <li>Problema temporal con el sistema de pagos</li>
+                    </ul>
+                </div>
+
+                <!-- What to do -->
+                <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); padding: 1.5rem; border-radius: 1rem; border: 2px solid #3b82f6;">
+                    <h3 style="margin-bottom: 1rem; color: #1e40af; display: flex; align-items: center; gap: 0.5rem;">
+                        💡 ¿Qué puedes hacer?
+                    </h3>
+                    <ul style="margin: 0; padding-left: 1.5rem; color: #1e3a8a;">
+                        <li style="margin-bottom: 0.5rem;">Verifica los datos de tu tarjeta</li>
+                        <li style="margin-bottom: 0.5rem;">Intenta con otro método de pago</li>
+                        <li style="margin-bottom: 0.5rem;">Contacta a tu banco</li>
+                        <li>Si el problema persiste, contáctanos</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="receipt-footer">
+                <h3 class="receipt-message">No te preocupes</h3>
+                <p class="receipt-submessage">
+                    Tus productos siguen en el carrito
+                </p>
+
+                <div class="receipt-actions">
+                    <a href="{% url 'checkout' %}" class="btn-primary-receipt" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                        🔄 Intentar Nuevamente
+                    </a>
+                    
+                    <a href="{% url 'carrito_compras' %}" class="btn-secondary-receipt">
+                        🛒 Ver Carrito
+                    </a>
+                    
+                    <a href="{% url 'menu' %}" class="btn-secondary-receipt">
+                        🛍️ Seguir Comprando
+                    </a>
+                </div>
+            </div>
+
+            <!-- Support Info -->
+            <div class="store-info">
+                <div class="store-info-line">
+                    <strong>¿Necesitas ayuda?</strong>
+                </div>
+                <div class="store-info-line">
+                    📧 soporte@bufuu.cl
+                </div>
+                <div class="store-info-line">
+                    📞 +56 9 XXXX XXXX
+                </div>
+                <div class="store-info-line" style="margin-top: 1rem;">
+                    Estamos aquí para ayudarte
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+
+</body>
+
+</html>

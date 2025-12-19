@@ -1,0 +1,484 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/modern_base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern_navbar.css' %}">
+    <title>BuFuu GrowShop - Tu Tienda de Cultivo</title>
+    <style>
+        /* ========================================
+           ESTILOS ESPECÍFICOS PARA INICIO
+           CORRECCIÓN DEFINITIVA DEL FOOTER
+           ======================================== */
+        
+        /* Asegurar que body tenga espacio para footer */
+        body {
+            padding-bottom: 0 !important; /* Eliminar padding del body */
+            margin-bottom: 0 !important;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            animation: float 15s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 0.875rem;
+            border-radius: 9999px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: black;   /* var(--text-secondary) */
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .hero-btn-primary {
+            padding: 1.25rem 2.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 800;
+            font-size: 1.125rem;
+            border: none;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .hero-btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(16, 185, 129, 0.5);
+        }
+
+        .hero-btn-secondary {
+            padding: 1.25rem 2.5rem;
+            background: white;
+            color: var(--primary-color);
+            border: 3px solid var(--primary-color);
+            font-weight: 800;
+            font-size: 1.125rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .hero-btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-4px);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 4rem 1rem;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .feature-card:nth-child(1) .feature-icon { animation-delay: 0s; }
+        .feature-card:nth-child(2) .feature-icon { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) .feature-icon { animation-delay: 0.4s; }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .feature-description {
+            font-size: 1rem;
+            color: black;   /* var(--text-secondary) */
+            line-height: 1.6;
+        }
+
+        /* Stats Section - CORRECCIÓN PRINCIPAL */
+        .stats-section {
+            padding: 4rem 1rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            /* IMPORTANTE: Remover position fixed/absolute */
+            position: relative;
+            margin-bottom: 80px; /* Espacio para el footer */
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-label {
+            font-size: 1.125rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        /* Footer - FIXED CORRECTO */
+        .site-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .footer-divider {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.125rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-btn-primary,
+            .hero-btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats-section {
+                margin-bottom: 100px;
+            }
+
+            .site-footer {
+                padding: 12px 15px;
+            }
+
+            .footer-content {
+                font-size: 0.8rem;
+                gap: 0.5rem;
+            }
+
+            .footer-divider {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .stats-section {
+                margin-bottom: 120px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'modern_navbar.html' %}
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <div class="hero-badge">🌿 Tu Tienda de Confianza</div>
+            
+            <h1 class="hero-title">
+                Bienvenidos a<br>BuFuu GrowShop
+            </h1>
+            
+            <p class="hero-subtitle">
+                Descubre los mejores productos para el cultivo cannábico. 
+                Calidad premium, envío discreto y asesoría experta para tu experiencia perfecta.
+            </p>
+            
+            <div class="hero-buttons">
+                <a href="{% url 'menu' %}" class="hero-btn-primary">
+                    🛍️ Ver Productos
+                </a>
+                <a href="{% url 'quienes_somos' %}" class="hero-btn-secondary">
+                    👥 Conócenos
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🌱</div>
+                <h3 class="feature-title">Productos Premium</h3>
+                <p class="feature-description">
+                    Selección cuidadosa de los mejores productos para tu cultivo. 
+                    Calidad garantizada en cada compra.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🚚</div>
+                <h3 class="feature-title">Envío Discreto</h3>
+                <p class="feature-description">
+                    Embalaje seguro y discreto. Tu privacidad es nuestra prioridad 
+                    en cada entrega.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💚</div>
+                <h3 class="feature-title">Asesoría Experta</h3>
+                <p class="feature-description">
+                    Nuestro equipo te guía en cada paso. Experiencia y conocimiento 
+                    a tu servicio.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section - SIN POSITION FIXED -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">Clientes Satisfechos</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Productos Disponibles</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-number">5★</div>
+                <div class="stat-label">Calificación Promedio</div>
+            </div>
+
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Atención al Cliente</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Fixed - AL FINAL -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <a href="tel:+56912345678" class="footer-link">📞 +569 1234 5678</a>
+            <span class="footer-divider">|</span>
+            <a href="mailto:bufuugrowshop@gmail.com" class="footer-link">📧 bufuugrowshop@gmail.com</a>
+            <span class="footer-divider">|</span>
+            <a href="https://www.instagram.com/bufuugrowshop" target="_blank" class="footer-link">📷 Instagram</a>
+            <span class="footer-divider">|</span>
+            <a href="https://www.facebook.com/bufuugrowshop" target="_blank" class="footer-link">📘 Facebook</a>
+        </div>
+    </footer>
+
+    <!-- Messages Display -->
+    {% if messages %}
+        <div style="position: fixed; top: 5rem; right: 1rem; z-index: 9999; max-width: 400px;">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" style="animation: slideIn 0.5s ease; margin-bottom: 0.5rem;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <script>
+        // Auto-dismiss messages
+        setTimeout(function() {
+            const messages = document.querySelectorAll('.alert');
+            messages.forEach(function(message) {
+                message.style.animation = 'fadeOut 0.5s ease forwards';
+                setTimeout(function() {
+                    message.remove();
+                }, 500);
+            });
+        }, 5000);
+    </script>
+
+</body>
+
+</html>
